@@ -1,0 +1,8 @@
+{
+  "BTCUSDT": {
+    "price_collar_percent": 2.0
+  },
+  "ETHUSDT": {
+    "price_collar_percent": 3.0
+  }
+}
