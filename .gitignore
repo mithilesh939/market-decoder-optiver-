@@ -11,3 +11,6 @@ tools/__pycache__/
 tools/real_market_data.bin
 tools/real_data_summary.json
 *.o
+__pycache__/
+*.pyc
+.venv/
