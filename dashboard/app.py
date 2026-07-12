@@ -21,7 +21,7 @@ with col_title:
     st.markdown("### `MARKETFLOW // LOW-LATENCY INFRASTRUCTURE OBSERVABILITY`")
     st.caption("Zero-Copy mmap Wire Protocol • Real June 2025 BTCUSDT Execution Feed")
 with col_badge:
-    st.markdown('<div style="text-align: right; margin-top: 10px;"><span class="real-data-badge">100% VERIFIED DATA</span></div>', unsafe_allow_html=True)
+    st.markdown('<div style="text-align: end; margin-block-start: 10px;"><span class="real-data-badge">100% VERIFIED DATA</span></div>', unsafe_allow_html=True)
 
 st.markdown("---")
 
