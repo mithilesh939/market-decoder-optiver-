@@ -14,3 +14,12 @@ tools/real_data_summary.json
 __pycache__/
 *.pyc
 .venv/
+datasets/
+*.bin
+*.csv
+*.zip
+datasets/
+*.bin
+*.csv
+*.zip
+bench_scale

@@ -63,6 +63,7 @@ class BacktestResult:
     def final_inventory(self) -> float:
         return self.points[-1].inventory if self.points else 0.0
 
+MAX_GRAPH_POINTS = 5000
 
 def run_backtest(
     bin_file_path: str, symbol: str = "BTCUSDT",
@@ -71,6 +72,7 @@ def run_backtest(
 ) -> BacktestResult:
     dfs = decode_to_dataframes(bin_file_path)
     trades = dfs["trades"].sort_values("timestamp_ns").reset_index(drop=True)
+    sample_every = max(1, len(trades) // MAX_GRAPH_POINTS)
     if len(trades) < 2:
         raise ValueError("need at least 2 real trades to run a backtest")
 
@@ -118,15 +120,25 @@ def run_backtest(
                 fill_rejected_reason = decision.reason
                 result.rejected_fills += 1
 
-        fair_value = trade_price
-        inventory = tracker.position(symbol)
-        mtm_pnl = cash + inventory * fair_value
+    fair_value = trade_price
+    inventory = tracker.position(symbol)
+    mtm_pnl = cash + inventory * fair_value
 
-        result.points.append(BacktestPoint(
-            tick=i, timestamp_ns=timestamp_ns, trade_price=trade_price,
-            fair_value=fair_value, inventory=inventory, cash=cash,
-            mark_to_market_pnl=mtm_pnl, our_bid=quote.bid_price, our_ask=quote.ask_price,
-            fill_side=fill_side, fill_rejected_reason=fill_rejected_reason,
-        ))
+    if i % sample_every == 0 or i == len(trades) - 1:
+        result.points.append(
+            BacktestPoint(
+                tick=i,
+                timestamp_ns=timestamp_ns,
+                trade_price=trade_price,
+                fair_value=fair_value,
+                inventory=inventory,
+                cash=cash,
+                mark_to_market_pnl=mtm_pnl,
+                our_bid=quote.bid_price,
+                our_ask=quote.ask_price,
+                fill_side=fill_side,
+                fill_rejected_reason=fill_rejected_reason,
+            )
+        )
 
     return result

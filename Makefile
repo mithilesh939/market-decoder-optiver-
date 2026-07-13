@@ -47,3 +47,6 @@ run-demo: bench
 
 clean:
 	rm -f generate benchmark test_decoder test_ring_buffer bench_concurrency bench_adaptive market_data.bin
+
+bench_scale: bench/bench_scale.cpp include/decoder.hpp
+	$(CXX) $(CXXFLAGS) -pthread bench/bench_scale.cpp -o bench_scale
