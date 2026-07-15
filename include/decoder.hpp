@@ -11,6 +11,9 @@
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#ifdef __GNUC__
+#include <xmmintrin.h>
+#endif
 
 namespace md {
 
@@ -74,29 +77,34 @@ public:
         size_t count = 0;
 
         while (offset < size_) {
+            #ifdef __GNUC__
+            if (offset + 256 < size_) {
+                __builtin_prefetch(data_ + offset + 256, 0, 3);
+            }
+            #endif
+
             MsgType type = static_cast<MsgType>(data_[offset]);
             size_t msg_size = wire_size(type);
 
-            if (msg_size == 0 || offset + msg_size > size_) {
+            if (__builtin_expect(msg_size == 0 || offset + msg_size > size_, 0)) {
                 throw std::runtime_error(
                     "MmapDecoder: corrupt stream at offset " + std::to_string(offset));
             }
-
             switch (type) {
                 case MsgType::Quote: {
-                    QuoteMsg m;
+                    alignas(64) QuoteMsg m;
                     std::memcpy(&m, data_ + offset, sizeof(QuoteMsg));
                     visitor.on_quote(m);
                     break;
                 }
                 case MsgType::Trade: {
-                    TradeMsg m;
+                    alignas(64) TradeMsg m;
                     std::memcpy(&m, data_ + offset, sizeof(TradeMsg));
                     visitor.on_trade(m);
                     break;
                 }
                 case MsgType::OrderAck: {
-                    OrderAckMsg m;
+                    alignas(64) OrderAckMsg m;
                     std::memcpy(&m, data_ + offset, sizeof(OrderAckMsg));
                     visitor.on_order_ack(m);
                     break;

@@ -1,10 +1,13 @@
 
 #include "../include/decoder.hpp"
 #include "../include/naive_decoder.hpp"
+#include "../include/cpu_affinity.hpp"
 
 #include <chrono>
+#include "../include/profiler.hpp"
 #include <cstdio>
 #include <string>
+
 
 using namespace md;
 using Clock = std::chrono::steady_clock;
@@ -33,6 +36,8 @@ void run_bench(const char* label, const std::string& path, int repeats) {
         DecoderT decoder(path);
         ChecksumVisitor visitor;
 
+        PROFILE_SCOPE(label);
+
         auto t0 = Clock::now();
         size_t count = decoder.decode_all(visitor);
         auto t1 = Clock::now();
@@ -55,6 +60,13 @@ int main(int argc, char** argv) {
         return 1;
     }
     std::string path = argv[1];
+    try {
+        md::pin_current_thread(0);
+        printf("Pinned benchmark thread to CPU 0\n");
+    }
+    catch (const std::exception& e) {
+        fprintf(stderr, "CPU pinning failed: %s\n", e.what());
+    }
     const int repeats = 5; // take the best of 5 runs, standard micro-bench practice
 
     printf("Benchmarking decoders on %s (best of %d runs)\n\n", path.c_str(), repeats);
