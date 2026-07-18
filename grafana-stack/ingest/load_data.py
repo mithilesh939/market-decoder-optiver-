@@ -1,17 +1,4 @@
-"""
-Loads existing analytics/backtest/latency CSV outputs into the TimescaleDB
-tables defined in init-db/01_schema.sql.
 
-ASSUMPTION (flag this back to me): I don't have your real CSV column names yet,
-so each *_MAPPING dict below is my best guess based on the component descriptions
-you gave (decoder latency percentiles, Avellaneda-Stoikov market maker, tick
-backtester, risk engine). Send me one sample row from each of your real CSVs
-(market_data/, latency/, backtest, risk) and I'll correct these mappings exactly.
-
-Usage:
-    pip install pandas sqlalchemy psycopg2-binary
-    python load_data.py --csv-dir /mnt/c/Projects/market-decoder-optiver/data
-"""
 
 import argparse
 from pathlib import Path
@@ -21,7 +8,7 @@ from sqlalchemy import create_engine
 
 DB_URL = "postgresql+psycopg2://quant:quant_dev_password@localhost:5432/quant"
 
-# --- column name guesses: edit these to match your real CSVs -------------
+
 MARKET_BARS_MAPPING = {
     "timestamp": "time", "date": "time",
     "symbol": "symbol",
@@ -68,7 +55,7 @@ MM_QUOTES_MAPPING = {
 }
 
 TABLE_CONFIG = [
-    # (glob pattern to find your CSVs, target table, column mapping)
+    
     ("**/*bars*.csv",      "market_bars",     MARKET_BARS_MAPPING),
     ("**/*ohlcv*.csv",     "market_bars",     MARKET_BARS_MAPPING),
     ("**/*trade*.csv",     "trades",          TRADES_MAPPING),
