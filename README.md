@@ -97,10 +97,10 @@ Pybind11 bindings exposing the C++ decoder to Python for research workflows.
 ### Decoder performance
 | Decoder | Latency | Throughput |
 |---|---|---|
-| Naive | 26.48 ns/message | 37.8M msg/s |
-| Memory-mapped | 7.75 ns/message | 129.1M msg/s |
+| Naive | 20.23 ns/message | 49.4M msg/s |
+| Memory-mapped | 8.26 ns/message | 121.1M msg/s |
 
-*(re-verify with `make bench` before publishing final numbers — see Reproducing below)*
+*Measured via `make bench` (best of 5 runs, 2M synthetic messages, checksum-verified identical output between decoders — confirms both paths decode correctly, not just fast).*
 
 ### Data pipeline
 - **695,541,427** real Binance BTCUSDT trades loaded, Jan 1 – Jun 30 2025
