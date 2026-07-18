@@ -1,7 +1,3 @@
-"""
-Runs a hyperparameter search over the
-Avellaneda-Stoikov market maker.
-"""
 
 import os
 import sys
