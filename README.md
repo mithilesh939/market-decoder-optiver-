@@ -105,8 +105,21 @@ Pybind11 bindings exposing the C++ decoder to Python for research workflows.
 ### Data pipeline
 - **695,541,427** real Binance BTCUSDT trades loaded, Jan 1 – Jun 30 2025
 - Raw binary size **23 GB** → compressed TimescaleDB hypertable **15 GB** (1.5x, native columnstore compression)
-- **0 missing days** across the full 6-month window (verified via `validate_data.py`)
+- **181 / 181 expected days present — 0 missing days**, verified via automated integrity check (`tools/validate_data.py`)
+- **0 rows** with zero/negative price or quantity across all 695M+ records
 - 27 compressed chunks, queried through 1h/1d continuous aggregates (~4,500 rows total) so dashboard panels never touch the raw 695M-row table directly
+
+**Monthly trade volume:**
+
+| Month | Trades |
+|---|---:|
+| Jan 2025 | 135,946,515 |
+| Feb 2025 | 128,881,324 |
+| Mar 2025 | 136,245,963 |
+| Apr 2025 | 104,290,701 |
+| May 2025 | 108,937,329 |
+| Jun 2025 | 81,239,595 |
+| **Total** | **695,541,427** |
 
 ### Risk & performance analytics (BTC market benchmark, computed from real price data)
 - Sharpe ratio (annualized): `[CONFIRM]`
